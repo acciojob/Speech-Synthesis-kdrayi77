@@ -1,7 +1,7 @@
 const synth = window.speechSynthesis;
 const voicesDropdown = document.getElementById("voices");
-const rate = document.getElementById("rate");
-const pitch = document.getElementById("pitch");
+const rate = document.querySelector('input[name="rate"]');
+const pitch = document.querySelector('input[name="pitch"]');
 const text = document.getElementById("text");
 const speakBtn = document.getElementById("speak");
 const stopBtn = document.getElementById("stop");
@@ -15,6 +15,11 @@ function populateVoices() {
   voicesDropdown.innerHTML = voices
     .map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`)
     .join("");
+  // Select first voice by default
+  if (voices.length && !utterance.voice) {
+    utterance.voice = voices[0];
+    voicesDropdown.value = voices[0].name;
+  }
 }
 
 // Change voice
@@ -25,6 +30,7 @@ function setVoice() {
 
 // Speak text
 function startSpeech() {
+  if (!text.value.trim()) return; // prevent empty speech
   utterance.text = text.value;
   utterance.rate = rate.value;
   utterance.pitch = pitch.value;
